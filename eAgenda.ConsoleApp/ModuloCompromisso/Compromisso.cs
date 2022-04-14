@@ -15,6 +15,10 @@ namespace eAgenda.ConsoleApp.ModuloCompromisso
         private readonly Contato contato;
         #endregion
 
+        #region Propriedades
+        public DateTime DataInicio { get => dataInicio; }
+        #endregion
+
         #region Construtor
         public Compromisso(string assunto, string local, DateTime dataInicio, DateTime dataFim, Contato contato)
         {

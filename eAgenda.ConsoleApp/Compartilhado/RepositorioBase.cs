@@ -30,7 +30,7 @@ namespace eAgenda.ConsoleApp.Compartilhado
             return registros.Remove(registros.Find(x => x.id == idSelecionado));
         }
 
-        public bool Excluir(int idSelecionado)
+        public virtual bool Excluir(int idSelecionado)
         {
             return registros.Remove(registros.Find(x => x.id == idSelecionado));
         }
@@ -38,6 +38,28 @@ namespace eAgenda.ConsoleApp.Compartilhado
         public List<T> SelecionarTodos() // Auxiliar para o Visualizar presente em cada Tela
         {
             return registros;
+        }
+
+        public List<T> Filtrar(Predicate<T> condicao)
+        {
+            List<T> registrosFiltrados = new List<T>();
+
+            foreach (T registro in registros)
+                if (condicao(registro))
+                    registrosFiltrados.Add(registro);
+
+            return registrosFiltrados;
+        }
+
+        public List<T> FiltrarEmIntervalo(Predicate<T> condicao, Predicate<T> condicao2)
+        {
+            List<T> registrosFiltrados = new List<T>();
+
+            foreach (T registro in registros)
+                if (condicao(registro) && condicao2(registro))
+                    registrosFiltrados.Add(registro);
+
+            return registrosFiltrados;
         }
 
         public T SelecionarRegistro(int idSelecionado)
@@ -58,6 +80,18 @@ namespace eAgenda.ConsoleApp.Compartilhado
         public int TemRegistros()
         {
             return registros.Count;
+        }
+
+        public bool TemAlgo()
+        {
+            foreach (T item in registros)
+            {
+                if(item != null)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

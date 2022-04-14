@@ -22,6 +22,20 @@ namespace eAgenda.ConsoleApp.ModuloCompromisso
         }
         #endregion
 
+
+        public override string MostrarOpcoes()
+        {
+            MostrarTitulo(Titulo);
+
+            Console.WriteLine("Digite 1 para Inserir");
+            Console.WriteLine("Digite 2 para Editar");
+            Console.WriteLine("Digite 3 para Excluir");
+            Console.WriteLine("Digite 4 para Visualizar");
+            Console.WriteLine("Digite 5 para Visualizar por período");
+
+            string opcao = Console.ReadLine();
+            return opcao;
+        }
         public void Inserir()
         {
             MostrarTitulo("Cadastro de Compromissos");
@@ -99,6 +113,34 @@ namespace eAgenda.ConsoleApp.ModuloCompromisso
                 Console.ReadKey();
                 return true;
             }
+        }
+
+        public void VisualizarPorPeriodo()
+        {
+            if (!repositorioCompromisso.TemAlgo())
+            {
+                Notificador.ApresentarMensagem("Sem compromissos...", TipoMensagemEnum.Atencao);
+                return;
+            }
+            Console.WriteLine("Informe a data inicial: ");
+            DateTime dataInicio = DateTime.Parse(Console.ReadLine());
+            Console.WriteLine("Informa a data final: ");
+            DateTime dataFim = DateTime.Parse(Console.ReadLine());
+
+            List<Compromisso> compromissosNoPeriodo = repositorioCompromisso.FiltrarEmIntervalo(x => x.DataInicio >= dataInicio, x => x.DataInicio <= dataFim);
+            if (compromissosNoPeriodo == null)
+            {
+                Notificador.ApresentarMensagem("Sem tarefas neste período", TipoMensagemEnum.Atencao);
+                return;
+            }
+
+            Console.WriteLine("Compromissos encontrados neste período: ");
+
+            foreach (Compromisso compromisso in compromissosNoPeriodo)
+            {
+                Console.WriteLine(compromisso.ToString() + "\n");
+            }
+            Console.ReadKey();
         }
 
         private Compromisso ObterCompromisso()

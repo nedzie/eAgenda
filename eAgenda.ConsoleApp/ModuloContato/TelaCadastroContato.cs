@@ -1,8 +1,8 @@
 ﻿using eAgenda.ConsoleApp.Compartilhado;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text.RegularExpressions;
+using System.ComponentModel.DataAnnotations; // Email
+using System.Text.RegularExpressions; // Telefone
 
 namespace eAgenda.ConsoleApp.ModuloContato
 {

@@ -59,6 +59,9 @@ namespace eAgenda.ConsoleApp
                             case "4":
                                 telaCompromisso.Visualizar();
                                 break;
+                            case "5":
+                                telaCompromisso.VisualizarPorPeriodo();
+                                break;
                             case "s":
                                 break;
                             default:
@@ -84,9 +87,15 @@ namespace eAgenda.ConsoleApp
                                 telaTarefa.Visualizar();
                                 break;
                             case "5":
-                                telaTarefa.AdicionarItens();
+                                telaTarefa.VisualizarConcluidas();
                                 break;
                             case "6":
+                                telaTarefa.VisualizarPendentes();
+                                break;
+                            case "7":
+                                telaTarefa.AdicionarItens();
+                                break;
+                            case "8":
                                 telaTarefa.ConcluirItens();
                                 break;
                             case "s":

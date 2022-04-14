@@ -42,11 +42,11 @@ namespace eAgenda.ConsoleApp.ModuloTarefa
 
             int numeroTarefa = ObterNumeroTarefa();// Daqui pra frente significa que tem algo para editar
 
-            Tarefa criacaoAntiga = repositorioTarefa.SelecionarRegistro(numeroTarefa);
+            Tarefa tarefaAntiga = repositorioTarefa.SelecionarRegistro(numeroTarefa);
 
             Tarefa novaTarefa = ObterTarefa();
 
-            Tarefa atualizada = repositorioTarefa.CriarParaEditar(criacaoAntiga, novaTarefa);
+            Tarefa atualizada = repositorioTarefa.CriarParaEditar(tarefaAntiga, novaTarefa);
 
             bool deuPraEditar = repositorioTarefa.Editar(numeroTarefa, atualizada);
 
@@ -114,6 +114,36 @@ namespace eAgenda.ConsoleApp.ModuloTarefa
             }
         }
 
+        internal void VisualizarPendentes()
+        {
+            if(!repositorioTarefa.TemAlgo())
+            {
+                Notificador.ApresentarMensagem("Sem tarefas pendentes", TipoMensagemEnum.Atencao);
+                return;
+            }    
+            List<Tarefa> tarefasPendentes = repositorioTarefa.Filtrar(x => x.concluida == false);
+            foreach (Tarefa tarefa in tarefasPendentes)
+            {
+                Console.WriteLine(tarefa.ToString() + "\n");
+            }
+            Console.ReadKey();
+        }
+
+        internal void VisualizarConcluidas()
+        {
+            if (!repositorioTarefa.TemAlgo())
+            {
+                Notificador.ApresentarMensagem("Sem tarefas pendentes", TipoMensagemEnum.Atencao);
+                return;
+            }
+            List<Tarefa> tarefasPendentes = repositorioTarefa.Filtrar(x => x.concluida == true);
+            foreach (Tarefa tarefa in tarefasPendentes)
+            {
+                Console.WriteLine(tarefa.ToString() + "\n");
+            }
+            Console.ReadKey();
+        }
+
         public override string MostrarOpcoes()
         {
             MostrarTitulo(Titulo);
@@ -121,9 +151,11 @@ namespace eAgenda.ConsoleApp.ModuloTarefa
             Console.WriteLine("Digite 1 para Inserir");
             Console.WriteLine("Digite 2 para Editar");
             Console.WriteLine("Digite 3 para Excluir");
-            Console.WriteLine("Digite 4 para Visualizar");
-            Console.WriteLine("Digite 5 para Adicionar itens a uma tarefa existente");
-            Console.WriteLine("Digite 6 para Concluir itens");
+            Console.WriteLine("Digite 4 para Visualizar todas");
+            Console.WriteLine("Digite 5 para Visualizar concluídas");
+            Console.WriteLine("Digite 6 para Visualizar pendentes");
+            Console.WriteLine("Digite 7 para Adicionar itens a uma tarefa existente");
+            Console.WriteLine("Digite 8 para Concluir itens:");
             Console.WriteLine("Digite s para sair");
 
             string opcao = Console.ReadLine();
@@ -135,7 +167,7 @@ namespace eAgenda.ConsoleApp.ModuloTarefa
             Console.WriteLine("Prioridade [1 - Alta, 2 - Normal, 3 - Baixa]");
             int prioridade = int.Parse(Console.ReadLine());
             PrioridadeEnum prioridadeTarefa = PrioridadeEnum.Baixa;
-            switch(prioridade)
+            switch (prioridade)
             {
                 case 1:
                     prioridadeTarefa = PrioridadeEnum.Alta;
@@ -172,13 +204,23 @@ namespace eAgenda.ConsoleApp.ModuloTarefa
 
         public void ConcluirItens()
         {
-            bool temTarefas = Visualizar();
+            bool temTarefas = Visualizar(); // Dá pra melhorar essa parte toda
             if (!temTarefas)
                 return;
             int numeroTarefa = ObterNumeroTarefa();
-            Console.WriteLine("E qual dos itens você gostaria de concluir?");
-            int idEscolhido = int.Parse(Console.ReadLine()) -1;
             Tarefa tarefaSelecionada = repositorioTarefa.SelecionarRegistro(numeroTarefa);
+            if (tarefaSelecionada.percentualConclusao == 100)
+            {
+                Notificador.ApresentarMensagem("Todos os itens desta tarefa já foram concluídos!", TipoMensagemEnum.Erro);
+                return;
+            }
+            if(tarefaSelecionada.itens.Count == 0)
+            {
+                Notificador.ApresentarMensagem("Sem itens nesta tarefa para concluir.", TipoMensagemEnum.Erro);
+                return;
+            }
+            Console.WriteLine("E qual dos itens você gostaria de concluir?");
+            int idEscolhido = int.Parse(Console.ReadLine()) - 1;
             tarefaSelecionada.ConcluirItem(idEscolhido);
         }
 
