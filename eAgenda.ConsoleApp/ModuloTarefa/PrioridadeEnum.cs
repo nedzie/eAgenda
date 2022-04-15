@@ -2,6 +2,6 @@
 {
     public enum PrioridadeEnum
     {
-        Alta = 1, Normal = 2, Baixa = 3
+        Alta = 3, Normal = 2, Baixa = 1
     }
 }

@@ -6,7 +6,7 @@ using System.Text;
 
 namespace eAgenda.ConsoleApp.ModuloTarefa
 {
-    public class Tarefa : EntidadeBase
+    public class Tarefa : EntidadeBase, IComparable<Tarefa>
     {
         private readonly PrioridadeEnum prioridade;
         private readonly string titulo;
@@ -48,6 +48,7 @@ namespace eAgenda.ConsoleApp.ModuloTarefa
         {
             string status = concluida ? "Concluída" : "Pendente";
             return "ID:" + id + "\n" +
+                   "Prioridade: " + prioridade + "\n" +
                    "Titulo: " + titulo + "\n" +
                    "Criação: " + dataCriacao + "\n" +
                    "Conclusão: " + dataConclusao + "\n" +
@@ -99,6 +100,11 @@ namespace eAgenda.ConsoleApp.ModuloTarefa
             this.percentualConclusao = ((itensConcluidos * 100)/ totalItens); // 2 * 100 = 200 / 4 = 50
             if (this.percentualConclusao == 100)
                 this.concluida = true;
+        }
+
+        public int CompareTo(Tarefa other)
+        {
+            return other.prioridade.CompareTo(prioridade);
         }
     }
 }

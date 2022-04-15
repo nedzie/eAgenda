@@ -97,6 +97,8 @@ namespace eAgenda.ConsoleApp.ModuloContato
             }
             else
             {
+                contatos.Sort();
+                contatos.Reverse();
                 foreach (Contato contato in contatos)
                 {
                     Console.WriteLine(contato.ToString() + "\n");
@@ -105,7 +107,6 @@ namespace eAgenda.ConsoleApp.ModuloContato
                 return true;
             }
         }
-
         #region Métodos privados
         private Contato ObterContato()
         {

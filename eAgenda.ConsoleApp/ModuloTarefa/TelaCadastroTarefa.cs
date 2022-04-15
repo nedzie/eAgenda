@@ -98,6 +98,7 @@ namespace eAgenda.ConsoleApp.ModuloTarefa
         public bool Visualizar()
         {
             List<Tarefa> tarefas = repositorioTarefa.SelecionarTodos();
+            tarefas.Sort();
             if (tarefas.Count == 0)
             {
                 Notificador.ApresentarMensagem("Nenhuma tarefa inserida.", TipoMensagemEnum.Atencao);
@@ -118,10 +119,16 @@ namespace eAgenda.ConsoleApp.ModuloTarefa
         {
             if(!repositorioTarefa.TemAlgo())
             {
-                Notificador.ApresentarMensagem("Sem tarefas pendentes", TipoMensagemEnum.Atencao);
+                Notificador.ApresentarMensagem("Sem tarefas...", TipoMensagemEnum.Atencao);
                 return;
             }    
             List<Tarefa> tarefasPendentes = repositorioTarefa.Filtrar(x => x.concluida == false);
+            if(tarefasPendentes.Count == 0)
+            {
+                Notificador.ApresentarMensagem("Sem tarefas pendentes", TipoMensagemEnum.Atencao);
+                return;
+            }
+            tarefasPendentes.Sort();
             foreach (Tarefa tarefa in tarefasPendentes)
             {
                 Console.WriteLine(tarefa.ToString() + "\n");
@@ -136,8 +143,9 @@ namespace eAgenda.ConsoleApp.ModuloTarefa
                 Notificador.ApresentarMensagem("Sem tarefas pendentes", TipoMensagemEnum.Atencao);
                 return;
             }
-            List<Tarefa> tarefasPendentes = repositorioTarefa.Filtrar(x => x.concluida == true);
-            foreach (Tarefa tarefa in tarefasPendentes)
+            List<Tarefa> tarefasConcluidas = repositorioTarefa.Filtrar(x => x.concluida == true);
+            tarefasConcluidas.Sort();
+            foreach (Tarefa tarefa in tarefasConcluidas)
             {
                 Console.WriteLine(tarefa.ToString() + "\n");
             }
@@ -164,19 +172,22 @@ namespace eAgenda.ConsoleApp.ModuloTarefa
         #region Métodos privados
         private Tarefa ObterTarefa()
         {
-            Console.WriteLine("Prioridade [1 - Alta, 2 - Normal, 3 - Baixa]");
+            Console.WriteLine("Prioridade [3 - Alta, 2 - Normal, 1 - Baixa]");
             int prioridade = int.Parse(Console.ReadLine());
             PrioridadeEnum prioridadeTarefa = PrioridadeEnum.Baixa;
             switch (prioridade)
             {
                 case 1:
-                    prioridadeTarefa = PrioridadeEnum.Alta;
+                    prioridadeTarefa = PrioridadeEnum.Baixa;
                     break;
                 case 2:
                     prioridadeTarefa = PrioridadeEnum.Normal;
                     break;
                 case 3:
-                    prioridadeTarefa = PrioridadeEnum.Baixa;
+                    prioridadeTarefa = PrioridadeEnum.Alta;
+                    break;
+                default:
+                    Notificador.ApresentarMensagem("Prioridade inválida, tente novamente!", TipoMensagemEnum.Atencao);
                     break;
             }
             Console.WriteLine("Titulo:");

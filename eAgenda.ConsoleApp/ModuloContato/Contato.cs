@@ -3,7 +3,7 @@ using System;
 
 namespace eAgenda.ConsoleApp.ModuloContato
 {
-    public class Contato : EntidadeBase
+    public class Contato : EntidadeBase, IComparable<Contato>
     {
         #region Atributos
         private readonly string nome;
@@ -25,7 +25,7 @@ namespace eAgenda.ConsoleApp.ModuloContato
         }
         #endregion
 
-        #region Override toString()
+        #region Overrides
         public override string ToString()
         {
             return "id: " + id + "\n" +
@@ -34,6 +34,11 @@ namespace eAgenda.ConsoleApp.ModuloContato
                    "Telefone: " + telefone + "\n" +
                    "Empresa: " + empresa + "\n" +
                    "Cargo: " + cargo + "\n";
+        }
+
+        public int CompareTo(Contato other)
+        {
+            return other.cargo.CompareTo(cargo);
         }
         #endregion
     }

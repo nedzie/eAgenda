@@ -12,7 +12,6 @@ namespace eAgenda.ConsoleApp.ModuloCompromisso
         private readonly RepositorioContato repositorioContato;
         private readonly TelaCadastroContato telaCadastroContato;
         #endregion
-
         #region Construtor
         public TelaCadastroCompromisso(RepositorioCompromisso repositorioCompromisso, TelaCadastroContato telaCadastroContato, RepositorioContato repositorioContato) : base("Gerenciando Compromissos")
         {
@@ -21,8 +20,6 @@ namespace eAgenda.ConsoleApp.ModuloCompromisso
             this.repositorioContato = repositorioContato;
         }
         #endregion
-
-
         public override string MostrarOpcoes()
         {
             MostrarTitulo(Titulo);
@@ -30,8 +27,11 @@ namespace eAgenda.ConsoleApp.ModuloCompromisso
             Console.WriteLine("Digite 1 para Inserir");
             Console.WriteLine("Digite 2 para Editar");
             Console.WriteLine("Digite 3 para Excluir");
-            Console.WriteLine("Digite 4 para Visualizar");
-            Console.WriteLine("Digite 5 para Visualizar por período");
+            Console.WriteLine("Digite 4 para Visualizar todos");
+            Console.WriteLine("Digite 5 para Visualizar por período"); // Já dá pra ver semanal e diário por aqui
+            Console.WriteLine("Digite 6 para Visualizar compromissos passados");
+            Console.WriteLine("Digite 7 para Visualizar compromissos futuros em geral");
+            Console.WriteLine("Digite 8 para Visualizar compromissos futuros filtrados por período");
 
             string opcao = Console.ReadLine();
             return opcao;
@@ -41,7 +41,7 @@ namespace eAgenda.ConsoleApp.ModuloCompromisso
             MostrarTitulo("Cadastro de Compromissos");
 
             int temRegistros = repositorioContato.TemRegistros();
-            if(temRegistros == 0)
+            if (temRegistros == 0)
             {
                 Notificador.ApresentarMensagem("Sem contatos inseridos para criar um compromisso.", TipoMensagemEnum.Atencao);
                 return;
@@ -143,6 +143,80 @@ namespace eAgenda.ConsoleApp.ModuloCompromisso
             Console.ReadKey();
         }
 
+        public void VisualizarPorPeriodoFuturo()
+        {
+            if (!repositorioCompromisso.TemAlgo())
+            {
+                Notificador.ApresentarMensagem("Sem compromissos...", TipoMensagemEnum.Atencao);
+                return;
+            }
+            DateTime dataInicio;
+            do
+            {
+                Console.WriteLine("Informe a data inicial: ");
+                dataInicio = DateTime.Parse(Console.ReadLine());
+                ValidarDaInicio(dataInicio);
+            } while (!ValidarDaInicio(dataInicio));
+
+            Console.WriteLine("Informa a data final: ");
+            DateTime dataFim = DateTime.Parse(Console.ReadLine());
+
+            List<Compromisso> compromissosNoPeriodo = repositorioCompromisso.FiltrarEmIntervalo(x => x.DataInicio >= dataInicio, x => x.DataInicio <= dataFim);
+            if (compromissosNoPeriodo == null)
+            {
+                Notificador.ApresentarMensagem("Sem tarefas neste período", TipoMensagemEnum.Atencao);
+                return;
+            }
+
+            Console.WriteLine("Compromissos encontrados neste período: ");
+
+            foreach (Compromisso compromisso in compromissosNoPeriodo)
+            {
+                Console.WriteLine(compromisso.ToString() + "\n");
+            }
+            Console.ReadKey();
+        }
+
+        public void VisualizarPassados()
+        {
+            if (!repositorioCompromisso.TemAlgo())
+            {
+                Notificador.ApresentarMensagem("Sem compromissos...", TipoMensagemEnum.Atencao);
+                return;
+            }
+            List<Compromisso> compromissosPassados = repositorioCompromisso.Filtrar(x => x.DataInicio < DateTime.Today);
+            if (compromissosPassados.Count == 0)
+            {
+                Notificador.ApresentarMensagem("Sem compromissos anteriores a " + DateTime.Today, TipoMensagemEnum.Atencao);
+                return;
+            }
+            foreach (Compromisso compromisso in compromissosPassados)
+            {
+                Console.WriteLine(compromisso.ToString() + "\n");
+            }
+            Console.ReadKey();
+        }
+
+        public void VisualizarFuturos()
+        {
+            if (!repositorioCompromisso.TemAlgo())
+            {
+                Notificador.ApresentarMensagem("Sem compromissos...", TipoMensagemEnum.Atencao);
+                return;
+            }
+            List<Compromisso> compromissosPassados = repositorioCompromisso.Filtrar(x => x.DataInicio > DateTime.Today);
+            if (compromissosPassados.Count == 0)
+            {
+                Notificador.ApresentarMensagem("Sem compromissos posteriores a " + DateTime.Today, TipoMensagemEnum.Atencao);
+                return;
+            }
+            foreach (Compromisso compromisso in compromissosPassados)
+            {
+                Console.WriteLine(compromisso.ToString() + "\n");
+            }
+            Console.ReadKey();
+        }
+
         private Compromisso ObterCompromisso()
         {
             Console.WriteLine("Digite o assunto do compromisso: ");
@@ -175,6 +249,14 @@ namespace eAgenda.ConsoleApp.ModuloCompromisso
 
             } while (numeroRegistroEncontrado == false);
             return numeroRegistro;
+        }
+
+        private bool ValidarDaInicio(DateTime dataInicio)
+        {
+            if (dataInicio < DateTime.Today)
+                return false;
+            else
+                return true;
         }
     }
 }

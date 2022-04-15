@@ -68,6 +68,9 @@ namespace eAgenda.ConsoleApp.Compartilhado
                 case "3":
                     tela = telaCadastroTarefa;
                     break;
+                default:
+                    Notificador.ApresentarMensagem("Opcao inválida", TipoMensagemEnum.Erro);
+                    break;
             }
             return tela;
         }

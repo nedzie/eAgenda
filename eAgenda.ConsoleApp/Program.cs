@@ -62,6 +62,15 @@ namespace eAgenda.ConsoleApp
                             case "5":
                                 telaCompromisso.VisualizarPorPeriodo();
                                 break;
+                            case "6":
+                                telaCompromisso.VisualizarPassados();
+                                break;
+                            case "7":
+                                telaCompromisso.VisualizarFuturos();
+                                break;
+                            case "8":
+                                telaCompromisso.VisualizarPorPeriodoFuturo();
+                                break;
                             case "s":
                                 break;
                             default:
